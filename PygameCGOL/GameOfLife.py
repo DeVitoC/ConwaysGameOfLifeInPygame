@@ -3,7 +3,7 @@ import sys
 import random
 
 class GameOfLife:
-	def __init__(self, screen_width=800, screen_height=600, cell_size=10, alive_color=(255, 0, 255), dead_color=(0, 0, 0)):
+	def __init__(self, screen_width=800, screen_height=600, cell_size=10, alive_color=(0, 255, 255), dead_color=(0, 0, 0)):
 		self.cell_size = cell_size
 		self.alive_color = alive_color
 		self.dead_color = dead_color
@@ -11,6 +11,8 @@ class GameOfLife:
 		self.num_cols = screen_width // cell_size
 		self.num_rows = screen_height // cell_size
 		self.game_board = []
+
+		self.is_paused = False
 
 		self.setup_game_board()
 		self.set_board()
@@ -62,6 +64,8 @@ class GameOfLife:
 		while True:
 			# needs to recognize a command to quit and when the app window is closed
 			self.handle_events()
+			if self.is_paused:
+				continue
 			self.draw_board()
 
 	def handle_events(self):
@@ -74,6 +78,10 @@ class GameOfLife:
 				# user can press "q" to quit
 				if event.unicode == 'q':
 					sys.exit()
+				elif event.unicode == 'p':
+					self.is_paused = not self.is_paused
+				elif event.unicode == 'r':
+					print("this will call a method to start over with a random board - to be written still")
 
 
 if __name__ == '__main__':

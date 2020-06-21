@@ -10,17 +10,59 @@ class GameOfLife:
 
 		self.num_cols = screen_width // cell_size
 		self.num_rows = screen_height // cell_size
+		self.game_board = []
+
+		self.setup_game_board()
+		self.set_board()
 
 		pygame.init()
-		self.screen = pygame.display.set_mode(pygame(screen_width, screen_height))
+		self.screen = pygame.display.set_mode((screen_width, screen_height))
 		pygame.display.flip()
 
+	#######################
+	# View methods:
+	#######################
+
+	def setup_game_board(self):
+		self.game_board = self.create_2d_board()
+
+	def draw_board(self):
+		self.clear_screen()
+		for row in range(self.num_rows):
+			for col in range(self.num_cols):
+				if self.game_board[row][col] == 1:
+					color = self.alive_color
+				else:
+					color = self.dead_color
+				pygame.draw.circle(self.screen, color, (col +  self.cell_size * (self.cell_size//2), row * self.cell_size + (self.cell_size//2)), self.cell_size//2, 0)
+		pygame.display.flip()
+
+	######################
+	# Helper Methods
+	######################
+
+	def create_2d_board(self):
+		board = []
+		for row in range(self.num_rows):
+			cols = [0] * self.num_cols
+			board.append(cols)
+		return board
+
+	def set_board(self):
+		for row in range(self.num_rows):
+			for cols in range(self.num_cols):
+				cell = random.choice([0, 1])
+			self.game_board[row][cols] = cell
+
+	def clear_screen(self):
+		self.screen.fill(self.dead_color)
 
 
 	def run(self):
 		while True:
 			# needs to recognize a command to quit and when the app window is closed
 			self.handle_events()
+			self.draw_board()
 
 	def handle_events(self):
 		for event in pygame.event.get():
@@ -32,3 +74,8 @@ class GameOfLife:
 				# user can press "q" to quit
 				if event.unicode == 'q':
 					sys.exit()
+
+
+if __name__ == '__main__':
+	game = GameOfLife()
+	game.run()

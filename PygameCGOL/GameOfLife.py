@@ -10,7 +10,8 @@ class GameOfLife:
 
 		self.num_cols = screen_width // cell_size
 		self.num_rows = screen_height // cell_size
-		self.game_board = []
+		self.game_boards = []
+		self.current_game_board = 0
 
 		self.is_paused = False
 
@@ -19,6 +20,7 @@ class GameOfLife:
 
 		pygame.init()
 		self.screen = pygame.display.set_mode((screen_width, screen_height))
+		self.clear_screen()
 		pygame.display.flip()
 
 	#######################
@@ -26,13 +28,14 @@ class GameOfLife:
 	#######################
 
 	def setup_game_board(self):
-		self.game_board = self.create_2d_board()
+		self.game_boards.append(self.create_2d_board())
+		self.game_boards.append(self.create_2d_board())
 
 	def draw_board(self):
 		self.clear_screen()
 		for row in range(self.num_rows):
 			for col in range(self.num_cols):
-				if self.game_board[row][col] == 1:
+				if self.game_boards[self.current_game_board][row][col] == 1:
 					color = self.alive_color
 				else:
 					color = self.dead_color
@@ -54,19 +57,10 @@ class GameOfLife:
 		for row in range(self.num_rows):
 			for cols in range(self.num_cols):
 				cell = random.choice([0, 1])
-			self.game_board[row][cols] = cell
+			self.game_boards[self.current_game_board][row][cols] = cell
 
 	def clear_screen(self):
 		self.screen.fill(self.dead_color)
-
-
-	def run(self):
-		while True:
-			# needs to recognize a command to quit and when the app window is closed
-			self.handle_events()
-			if self.is_paused:
-				continue
-			self.draw_board()
 
 	def handle_events(self):
 		for event in pygame.event.get():
@@ -82,6 +76,20 @@ class GameOfLife:
 					self.is_paused = not self.is_paused
 				elif event.unicode == 'r':
 					print("this will call a method to start over with a random board - to be written still")
+
+	#######################
+	# Run loop
+	#######################
+
+	def run(self):
+		while True:
+			# needs to recognize a command to quit and when the app window is closed
+			self.handle_events()
+			if self.is_paused:
+				continue
+			self.draw_board()
+
+
 
 
 if __name__ == '__main__':

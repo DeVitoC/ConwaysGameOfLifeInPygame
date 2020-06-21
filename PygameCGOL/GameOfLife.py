@@ -39,7 +39,12 @@ class GameOfLife:
 					color = self.alive_color
 				else:
 					color = self.dead_color
-				pygame.draw.circle(self.screen, color, (col +  self.cell_size * (self.cell_size//2), row * self.cell_size + (self.cell_size//2)), self.cell_size//2, 0)
+				pygame.draw.circle(self.screen,
+				                   color,
+				                   (col *  self.cell_size + (self.cell_size//2),
+				                    row * self.cell_size + (self.cell_size//2)),
+				                   self.cell_size//2,
+				                   0)
 		pygame.display.flip()
 
 	######################
@@ -83,8 +88,9 @@ class GameOfLife:
 
 	def run(self):
 		while True:
-			# needs to recognize a command to quit and when the app window is closed
+			# needs to handle events
 			self.handle_events()
+			# handles pause condition while still listening to events
 			if self.is_paused:
 				continue
 			self.draw_board()

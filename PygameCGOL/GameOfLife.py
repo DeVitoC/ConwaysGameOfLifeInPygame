@@ -62,7 +62,7 @@ class GameOfLife:
 		for row in range(self.num_rows):
 			for cols in range(self.num_cols):
 				cell = random.choice([0, 1])
-			self.game_boards[self.current_game_board][row][cols] = cell
+				self.game_boards[self.current_game_board][row][cols] = cell
 
 	def clear_screen(self):
 		self.screen.fill(self.dead_color)
@@ -93,6 +93,7 @@ class GameOfLife:
 			# handles pause condition while still listening to events
 			if self.is_paused:
 				continue
+			# Draw the current game board on the screen
 			self.draw_board()
 
 

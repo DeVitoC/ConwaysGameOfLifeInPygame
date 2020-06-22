@@ -70,11 +70,69 @@ class GameOfLife:
 	def alternate_boards(self):
 		for row in range(self.num_rows):
 			for col in range(self.num_cols):
-				print("This is where the check for the 4 rules of the Game Of Life would happen - to be built)")
+				next_cell_state = self.check_surrounding_cells(row, col)
 				# Temporarily just assigning a random value to make sure it's alternating correctly
-				cell = random.choice([0, 1])
-				self.game_boards[self.current_game_board][row][col] = cell
+				# next_cell_state = random.choice([0, 1])
+				self.game_boards[(self.current_game_board + 1) % 2][row][col] = next_cell_state
 		self.current_game_board = (self.current_game_board + 1) % 2
+
+	def check_surrounding_cells(self, row_number, col_number):
+		current_cell = (col_number, row_number)
+		prev_col = self.set_prev_col(col_number)
+		next_col = self.set_next_col(col_number)
+		prev_row = self.set_prev_row(row_number)
+		next_row = self.set_next_row(row_number)
+
+		num_alive_neighbors = 0
+		current_cell_value = 0
+		for col in [prev_col, current_cell[0], next_col]:
+			for row in [prev_row, current_cell[1], next_row]:
+				if col == current_cell[0] and row == current_cell[1]:
+					current_cell_value = self.game_boards[self.current_game_board][row][col]
+				elif self.game_boards[self.current_game_board][row][col] == 1:
+					num_alive_neighbors += 1
+		return self.test_alive_state(current_cell_value, num_alive_neighbors)
+
+	def set_prev_col(self, col):
+		if col == 0:
+			return self.num_cols - 1
+		else:
+			return col - 1
+
+	def set_next_col(self, col):
+		if col == self.num_cols - 1:
+			return 0
+		else:
+			return col + 1
+
+	def set_prev_row(self, row):
+		if row == 0:
+			return self.num_rows - 1
+		else:
+			return row - 1
+
+	def set_next_row(self, row):
+		if row == self.num_rows - 1:
+			return 0
+		else:
+			return row + 1
+
+	def test_alive_state(self, current_cell, num_alive_neighbors):
+		# Cell dies
+		if num_alive_neighbors > 3:
+			return 0
+		elif num_alive_neighbors < 2:
+			return 0
+		# Dead Cells come to life
+		elif current_cell == 0 and num_alive_neighbors == 3:
+			return 1
+		# Staying alive
+		elif current_cell == 1:
+			return 1
+		# All cases should be accounted for, but just in case,
+		# return dead since cell won't have 2 or 3 live neighbors or be dead with 3 live neighbors
+		else:
+			return 0
 
 	def handle_events(self):
 		for event in pygame.event.get():

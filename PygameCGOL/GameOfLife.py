@@ -67,6 +67,15 @@ class GameOfLife:
 	def clear_screen(self):
 		self.screen.fill(self.dead_color)
 
+	def alternate_boards(self):
+		for row in range(self.num_rows):
+			for col in range(self.num_cols):
+				print("This is where the check for the 4 rules of the Game Of Life would happen - to be built)")
+				# Temporarily just assigning a random value to make sure it's alternating correctly
+				cell = random.choice([0, 1])
+				self.game_boards[self.current_game_board][row][col] = cell
+		self.current_game_board = (self.current_game_board + 1) % 2
+
 	def handle_events(self):
 		for event in pygame.event.get():
 			# User has closed the window manually
@@ -80,11 +89,11 @@ class GameOfLife:
 				elif event.unicode == 'p':
 					self.is_paused = not self.is_paused
 				elif event.unicode == 'r':
-					print("this will call a method to start over with a random board - to be written still")
+					self.set_board()
 
-	#######################
+	####################
 	# Run loop
-	#######################
+	####################
 
 	def run(self):
 		while True:
@@ -93,6 +102,8 @@ class GameOfLife:
 			# handles pause condition while still listening to events
 			if self.is_paused:
 				continue
+			# Switch between current and inactive game boards
+			self.alternate_boards()
 			# Draw the current game board on the screen
 			self.draw_board()
 

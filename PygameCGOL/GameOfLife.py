@@ -2,8 +2,15 @@ import pygame
 import sys
 import random
 
+
 class GameOfLife:
-	def __init__(self, screen_width=800, screen_height=600, cell_size=10, alive_color=(0, 255, 255), dead_color=(0, 0, 0), speed = 4):
+	def __init__(self, screen_width = 800,
+						screen_height = 600,
+						cell_size = 10,
+						alive_color = "turquoise",
+						dead_color = "black",
+						speed = 4,
+						preset = "random"):
 		self.cell_size = cell_size
 		self.alive_color = alive_color
 		self.dead_color = dead_color
@@ -16,8 +23,9 @@ class GameOfLife:
 		self.is_paused = False
 		self.speed = speed
 		self.last_update_time = 0
-		self.desired_time_between_updates = (1/self.speed) * 1000
+		self.desired_time_between_updates = (1 / self.speed) * 1000
 
+		self.preset = preset
 		self.setup_game_board()
 		self.set_board()
 
@@ -43,11 +51,11 @@ class GameOfLife:
 				else:
 					color = self.dead_color
 				pygame.draw.circle(self.screen,
-				                   color,
-				                   (col *  self.cell_size + (self.cell_size//2),
-				                    row * self.cell_size + (self.cell_size//2)),
-				                   self.cell_size//2,
-				                   0)
+										color,
+										(col * self.cell_size + (self.cell_size // 2),
+										row * self.cell_size + (self.cell_size // 2)),
+										self.cell_size // 2,
+										0)
 		pygame.display.flip()
 
 	######################
@@ -62,10 +70,19 @@ class GameOfLife:
 		return board
 
 	def set_board(self):
-		for row in range(self.num_rows):
-			for cols in range(self.num_cols):
-				cell = random.choice([0, 1])
-				self.game_boards[self.current_game_board][row][cols] = cell
+		if self.preset == "random":
+			for row in range(self.num_rows):
+				for cols in range(self.num_cols):
+					cell = random.choice([0, 1])
+					self.game_boards[self.current_game_board][row][cols] = cell
+		elif self.preset == "option1":
+			print("this will be preset 1")
+		elif self.preset == "option1":
+			print("this will be preset 2")
+		elif self.preset == "option2":
+			print("this will be preset 3")
+		elif self.preset == "option3":
+			print("this will be preset 4")
 
 	def clear_screen(self):
 		self.screen.fill(self.dead_color)
@@ -120,7 +137,8 @@ class GameOfLife:
 		else:
 			return row + 1
 
-	def test_alive_state(self, current_cell, num_alive_neighbors):
+	@staticmethod
+	def test_alive_state(current_cell, num_alive_neighbors):
 		# Cell dies
 		if num_alive_neighbors > 3:
 			return 0
@@ -145,7 +163,6 @@ class GameOfLife:
 			pygame.time.delay(int(time_to_delay))
 		self.last_update_time = now
 
-
 	def handle_events(self):
 		for event in pygame.event.get():
 			# User has closed the window manually
@@ -164,7 +181,7 @@ class GameOfLife:
 					if self.speed < 2:
 						return
 					self.speed -= 1
-					self.desired_time_between_updates = (1/self.speed) * 1000
+					self.desired_time_between_updates = (1 / self.speed) * 1000
 				elif event.unicode == '+':
 					self.speed += 1
 					self.desired_time_between_updates = (1 / self.speed) * 1000
@@ -186,8 +203,6 @@ class GameOfLife:
 			self.draw_board()
 			# Control speed by waiting after each iteration
 			self.set_speed()
-
-
 
 
 if __name__ == '__main__':

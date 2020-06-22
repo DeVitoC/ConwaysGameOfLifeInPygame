@@ -3,7 +3,7 @@ import sys
 import random
 
 class GameOfLife:
-	def __init__(self, screen_width=800, screen_height=600, cell_size=10, alive_color=(0, 255, 255), dead_color=(0, 0, 0)):
+	def __init__(self, screen_width=800, screen_height=600, cell_size=10, alive_color=(0, 255, 255), dead_color=(0, 0, 0), speed = 4):
 		self.cell_size = cell_size
 		self.alive_color = alive_color
 		self.dead_color = dead_color
@@ -14,6 +14,9 @@ class GameOfLife:
 		self.current_game_board = 0
 
 		self.is_paused = False
+		self.speed = speed
+		self.last_update_time = 0
+		self.desired_time_between_updates = (1/self.speed) * 1000
 
 		self.setup_game_board()
 		self.set_board()
@@ -134,6 +137,15 @@ class GameOfLife:
 		else:
 			return 0
 
+	def set_speed(self):
+		now = pygame.time.get_ticks()
+		time_since_last_update = now - self.last_update_time
+		time_to_delay = self.desired_time_between_updates - time_since_last_update
+		if time_to_delay > 0:
+			pygame.time.delay(int(time_to_delay))
+		self.last_update_time = now
+
+
 	def handle_events(self):
 		for event in pygame.event.get():
 			# User has closed the window manually
@@ -148,6 +160,14 @@ class GameOfLife:
 					self.is_paused = not self.is_paused
 				elif event.unicode == 'r':
 					self.set_board()
+				elif event.unicode == '-':
+					if self.speed < 2:
+						return
+					self.speed -= 1
+					self.desired_time_between_updates = (1/self.speed) * 1000
+				elif event.unicode == '+':
+					self.speed += 1
+					self.desired_time_between_updates = (1 / self.speed) * 1000
 
 	####################
 	# Run loop
@@ -164,6 +184,8 @@ class GameOfLife:
 			self.alternate_boards()
 			# Draw the current game board on the screen
 			self.draw_board()
+			# Control speed by waiting after each iteration
+			self.set_speed()
 
 
 

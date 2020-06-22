@@ -1,5 +1,8 @@
 import tkinter as tk
 import tkinter.font as tkfont
+import importlib
+
+gol = importlib.import_module("GameOfLife")
 
 window = tk.Tk()
 window.title("Conway's Game of Life")
@@ -48,8 +51,12 @@ def start_opt4():
 
 
 def start_game():
-		game = GameOfLife()
-		game.run
+	# game = gol.GameOfLife(cell_size = cell_size.get(),
+	# 						alive_color = alive_color.get(),
+	# 						speed = speed.get(),
+	# 						preset = preset)
+	game = gol.GameOfLife()
+	game.run
 
 
 frm_start_options = tk.Frame(master = window, pady = 20)

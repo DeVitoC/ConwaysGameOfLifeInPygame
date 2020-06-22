@@ -17,8 +17,11 @@ class GameOfLife:
 
 		self.num_cols = screen_width // cell_size
 		self.num_rows = screen_height // cell_size
-		self.game_boards = []
-		self.current_game_board = 0
+		# self.game_boards = []
+		# self.game_board1 = []
+		# self.game_board2 = []
+		self.current_game_board = []
+		self.inactive_board = []
 
 		self.is_paused = False
 		self.speed = speed
@@ -26,6 +29,8 @@ class GameOfLife:
 		self.desired_time_between_updates = (1 / self.speed) * 1000
 
 		self.preset = preset
+		self.screen_width = screen_width
+		self.screen_height = screen_height
 		self.setup_game_board()
 		self.set_board()
 
@@ -39,14 +44,17 @@ class GameOfLife:
 	#######################
 
 	def setup_game_board(self):
-		self.game_boards.append(self.create_2d_board())
-		self.game_boards.append(self.create_2d_board())
+		# self.game_boards.append(self.create_2d_board())
+		# self.game_boards.append(self.create_2d_board())
+		self.current_game_board = self.create_2d_board()
+		self.inactive_board = self.create_2d_board()
 
 	def draw_board(self):
 		self.clear_screen()
 		for row in range(self.num_rows):
 			for col in range(self.num_cols):
-				if self.game_boards[self.current_game_board][row][col] == 1:
+				# if self.game_boards[self.current_game_board][row][col] == 1:
+				if self.current_game_board[row][col] == 1:
 					color = self.alive_color
 				else:
 					color = self.dead_color
@@ -74,7 +82,8 @@ class GameOfLife:
 			for row in range(self.num_rows):
 				for cols in range(self.num_cols):
 					cell = random.choice([0, 1])
-					self.game_boards[self.current_game_board][row][cols] = cell
+					# self.game_boards[self.current_game_board][row][cols] = cell
+					self.current_game_board[row][cols] = cell
 		elif self.preset == "option1":
 			print("this will be preset 1")
 		elif self.preset == "option1":
@@ -93,8 +102,10 @@ class GameOfLife:
 				next_cell_state = self.check_surrounding_cells(row, col)
 				# Temporarily just assigning a random value to make sure it's alternating correctly
 				# next_cell_state = random.choice([0, 1])
-				self.game_boards[(self.current_game_board + 1) % 2][row][col] = next_cell_state
-		self.current_game_board = (self.current_game_board + 1) % 2
+		# 		self.game_boards[(self.current_game_board + 1) % 2][row][col] = next_cell_state
+		# self.current_game_board = (self.current_game_board + 1) % 2
+				self.inactive_board[row][col] = next_cell_state
+		self.current_game_board, self.inactive_board = self.inactive_board, self.current_game_board
 
 	def check_surrounding_cells(self, row_number, col_number):
 		current_cell = (col_number, row_number)
@@ -108,8 +119,10 @@ class GameOfLife:
 		for col in [prev_col, current_cell[0], next_col]:
 			for row in [prev_row, current_cell[1], next_row]:
 				if col == current_cell[0] and row == current_cell[1]:
-					current_cell_value = self.game_boards[self.current_game_board][row][col]
-				elif self.game_boards[self.current_game_board][row][col] == 1:
+					# current_cell_value = self.game_boards[self.current_game_board][row][col]
+					current_cell_value = self.current_game_board[row][col]
+				# elif self.game_boards[self.current_game_board][row][col] == 1:
+				elif self.current_game_board[row][col] == 1:
 					num_alive_neighbors += 1
 		return self.test_alive_state(current_cell_value, num_alive_neighbors)
 
@@ -191,6 +204,7 @@ class GameOfLife:
 	####################
 
 	def run(self):
+		clock = pygame.time.Clock()
 		while True:
 			# needs to handle events
 			self.handle_events()
@@ -201,8 +215,9 @@ class GameOfLife:
 			self.alternate_boards()
 			# Draw the current game board on the screen
 			self.draw_board()
+			clock.tick(self.speed)
 			# Control speed by waiting after each iteration
-			self.set_speed()
+			# self.set_speed()
 
 
 if __name__ == '__main__':

@@ -6,5 +6,5 @@ Key Commands in Conway's Game of Life:
     5.  '4' - Starts over with preset four (Stable Shapes)
     6.  '5' - Starts over with preset five (Spaceships)
     7.  '-' - Decreases the speed of the game
-    8.  '+' - Increases the speed of the game
+    8.  '=' - Increases the speed of the game
     9.  'q' - Quits to the main screen

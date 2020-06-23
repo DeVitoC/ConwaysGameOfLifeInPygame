@@ -2,6 +2,19 @@ import pygame
 import sys
 import random
 
+from pygame.locals import (
+	K_1,
+	K_2,
+	K_3,
+	K_4,
+	K_5,
+	K_q,
+	K_p,
+	K_MINUS,
+	K_EQUALS,
+	QUIT,
+)
+
 
 class GameOfLife:
 	def __init__(self, screen_width = 800,
@@ -160,24 +173,58 @@ class GameOfLife:
 	def handle_events(self):
 		for event in pygame.event.get():
 			# User has closed the window manually
-			if event.type == pygame.QUIT:
+			if event.type == QUIT:
 				sys.exit()
 			# User pressed a button
-			elif event.type == pygame.KEYDOWN:
+			# elif event.type == KEYDOWN:
+		pressed_keys = pygame.key.get_pressed()
 				# user can press "q" to quit
-				if event.unicode == 'q':
-					self.did_quit = True
-				elif event.unicode == 'p':
-					self.is_paused = not self.is_paused
-				elif event.unicode == 'r':
-					self.preset = "random"
-					self.set_board()
-				elif event.unicode == '-':
-					if self.speed < 2:
-						return
-					self.speed -= 1
-				elif event.unicode == '+':
-					self.speed += 1
+		if pressed_keys[K_q]:
+			self.did_quit = True
+		# user can press "p" to toggle between play and pause
+		elif pressed_keys[K_p]:
+			self.is_paused = not self.is_paused
+		# user chooses preset 1 with "1"
+		elif pressed_keys[K_1]:
+			self.preset = "random"
+			self.reset_screen()
+			self.set_board()
+		# user chooses preset 2 with "2"
+		elif pressed_keys[K_2]:
+			self.preset = "option1"
+			self.reset_screen()
+			self.set_board()
+		# user chooses preset 3 with "3"
+		elif pressed_keys[K_3]:
+			self.preset = "option2"
+			self.reset_screen()
+			self.set_board()
+		# user chooses preset 4 with "4"
+		elif pressed_keys[K_4]:
+			self.preset = "option3"
+			self.reset_screen()
+			self.set_board()
+		# user chooses preset 5 with "5"
+		elif pressed_keys[K_5]:
+			self.preset = "option4"
+			self.reset_screen()
+			self.set_board()
+		# User can press "-" to slow the game
+		elif pressed_keys[K_MINUS]:
+			if self.speed < 2:
+				return
+			self.speed -= 1
+		# uset can press "+" to speed up the game
+		elif pressed_keys[K_EQUALS]:
+			self.speed += 1
+
+	def reset_screen(self):
+		self.current_game_board = []
+		self.inactive_board = []
+		self.current_game_board = self.create_2d_board()
+		self. inactive_board = self.create_2d_board()
+
+
 
 	####################
 	# Premade Patterns
@@ -398,7 +445,6 @@ class GameOfLife:
 			self.handle_events()
 			if self.did_quit:
 				pygame.display.quit()
-				# pygame.quit()
 				break
 			# handles pause condition while still listening to events
 			if self.is_paused:

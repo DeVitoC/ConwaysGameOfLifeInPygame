@@ -26,16 +26,19 @@ lbl_game_name.pack()
 
 
 def start_random():
+	global preset
 	preset = "random"
 	start_game()
 
 
 def start_opt1():
+	global preset
 	preset = "option1"
 	start_game()
 
 
 def start_opt2():
+	# global preset
 	preset = "option2"
 	start_game()
 
@@ -51,17 +54,17 @@ def start_opt4():
 
 
 def start_game():
-	# game = gol.GameOfLife(cell_size = cell_size.get(),
-	# 						alive_color = alive_color.get(),
-	# 						speed = speed.get(),
-	# 						preset = preset)
-	game = gol.GameOfLife()
-	game.run
+	game = gol.GameOfLife(cell_size = cell_size.get(),
+							alive_color = alive_color.get(),
+							speed = speed.get(),
+							preset = preset)
+	# game = gol.GameOfLife()
+	game.run()
 
 
 frm_start_options = tk.Frame(master = window, pady = 20)
 btn_random = tk.Button(master = frm_start_options, text = "Random", command = start_random, pady = 10)
-btn_opt1 = tk.Button(master = frm_start_options, text = "Option 1", command = start_opt1, pady = 10)
+btn_opt1 = tk.Button(master = frm_start_options, text = "Gosper Glider Gun", command = start_opt1, pady = 10)
 btn_opt2 = tk.Button(master = frm_start_options, text = "Option 2", command = start_opt2, pady = 10)
 btn_opt3 = tk.Button(master = frm_start_options, text = "Option 3", command = start_opt3, pady = 10)
 btn_opt4 = tk.Button(master = frm_start_options, text = "Option 4", command = start_opt4, pady = 10)

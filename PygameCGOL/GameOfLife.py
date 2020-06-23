@@ -4,7 +4,7 @@ import random
 
 
 class GameOfLife:
-	def __init__(self, screen_width = 800,
+	def __init__(self, screen_width = 1000,
 						screen_height = 600,
 						cell_size = 10,
 						alive_color = "turquoise",
@@ -17,9 +17,6 @@ class GameOfLife:
 
 		self.num_cols = screen_width // cell_size
 		self.num_rows = screen_height // cell_size
-		# self.game_boards = []
-		# self.game_board1 = []
-		# self.game_board2 = []
 		self.current_game_board = []
 		self.inactive_board = []
 
@@ -44,8 +41,6 @@ class GameOfLife:
 	#######################
 
 	def setup_game_board(self):
-		# self.game_boards.append(self.create_2d_board())
-		# self.game_boards.append(self.create_2d_board())
 		self.current_game_board = self.create_2d_board()
 		self.inactive_board = self.create_2d_board()
 
@@ -53,7 +48,6 @@ class GameOfLife:
 		self.clear_screen()
 		for row in range(self.num_rows):
 			for col in range(self.num_cols):
-				# if self.game_boards[self.current_game_board][row][col] == 1:
 				if self.current_game_board[row][col] == 1:
 					color = self.alive_color
 				else:
@@ -78,14 +72,15 @@ class GameOfLife:
 		return board
 
 	def set_board(self):
+		print(self.preset)
 		if self.preset == "random":
 			for row in range(self.num_rows):
 				for cols in range(self.num_cols):
 					cell = random.choice([0, 1])
-					# self.game_boards[self.current_game_board][row][cols] = cell
 					self.current_game_board[row][cols] = cell
 		elif self.preset == "option1":
-			print("this will be preset 1")
+			self.option1()
+			print("option1")
 		elif self.preset == "option1":
 			print("this will be preset 2")
 		elif self.preset == "option2":
@@ -100,14 +95,12 @@ class GameOfLife:
 		for row in range(self.num_rows):
 			for col in range(self.num_cols):
 				next_cell_state = self.check_surrounding_cells(row, col)
-				# Temporarily just assigning a random value to make sure it's alternating correctly
-				# next_cell_state = random.choice([0, 1])
-		# 		self.game_boards[(self.current_game_board + 1) % 2][row][col] = next_cell_state
-		# self.current_game_board = (self.current_game_board + 1) % 2
 				self.inactive_board[row][col] = next_cell_state
 		self.current_game_board, self.inactive_board = self.inactive_board, self.current_game_board
 
 	def check_surrounding_cells(self, row_number, col_number):
+		if self.preset == "option1" and (col_number == self.num_cols - 1 or row_number == self.num_rows - 1):
+			return 0
 		current_cell = (col_number, row_number)
 		prev_col = self.set_prev_col(col_number)
 		next_col = self.set_next_col(col_number)
@@ -119,9 +112,7 @@ class GameOfLife:
 		for col in [prev_col, current_cell[0], next_col]:
 			for row in [prev_row, current_cell[1], next_row]:
 				if col == current_cell[0] and row == current_cell[1]:
-					# current_cell_value = self.game_boards[self.current_game_board][row][col]
 					current_cell_value = self.current_game_board[row][col]
-				# elif self.game_boards[self.current_game_board][row][col] == 1:
 				elif self.current_game_board[row][col] == 1:
 					num_alive_neighbors += 1
 		return self.test_alive_state(current_cell_value, num_alive_neighbors)
@@ -185,6 +176,7 @@ class GameOfLife:
 			elif event.type == pygame.KEYDOWN:
 				# user can press "q" to quit
 				if event.unicode == 'q':
+					# pygame.quit()
 					sys.exit()
 				elif event.unicode == 'p':
 					self.is_paused = not self.is_paused
@@ -198,6 +190,57 @@ class GameOfLife:
 				elif event.unicode == '+':
 					self.speed += 1
 					self.desired_time_between_updates = (1 / self.speed) * 1000
+
+	####################
+	# Premade Patterns
+	####################
+
+	def option1(self):
+		# set board to all dead
+		# for row in range(self.num_rows):
+		# 	for cols in range(self.num_cols):
+		# 		self.current_game_board[row][cols] = 0
+
+		# set alive cells for Gosper glider gun
+			self.current_game_board[2][26] = 1
+			self.current_game_board[3][24] = 1
+			self.current_game_board[3][26] = 1
+			self.current_game_board[4][14] = 1
+			self.current_game_board[4][15] = 1
+			self.current_game_board[4][22] = 1
+			self.current_game_board[4][23] = 1
+			self.current_game_board[4][36] = 1
+			self.current_game_board[4][37] = 1
+			self.current_game_board[5][13] = 1
+			self.current_game_board[5][17] = 1
+			self.current_game_board[5][22] = 1
+			self.current_game_board[5][23] = 1
+			self.current_game_board[5][36] = 1
+			self.current_game_board[5][37] = 1
+			self.current_game_board[6][2] = 1
+			self.current_game_board[6][3] = 1
+			self.current_game_board[6][12] = 1
+			self.current_game_board[6][18] = 1
+			self.current_game_board[6][22] = 1
+			self.current_game_board[6][23] = 1
+			self.current_game_board[7][2] = 1
+			self.current_game_board[7][3] = 1
+			self.current_game_board[7][12] = 1
+			self.current_game_board[7][16] = 1
+			self.current_game_board[7][18] = 1
+			self.current_game_board[7][19] = 1
+			self.current_game_board[7][24] = 1
+			self.current_game_board[7][26] = 1
+			self.current_game_board[8][12] = 1
+			self.current_game_board[8][18] = 1
+			self.current_game_board[8][26] = 1
+			self.current_game_board[9][13] = 1
+			self.current_game_board[9][17] = 1
+			self.current_game_board[10][14] = 1
+			self.current_game_board[10][15] = 1
+
+
+
 
 	####################
 	# Run loop

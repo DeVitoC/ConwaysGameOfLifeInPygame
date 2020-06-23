@@ -1,4 +1,4 @@
 # import GameOfLife
 #
 # game = GameOfLife()
-# game.run
+# game.run()

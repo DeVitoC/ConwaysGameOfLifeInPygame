@@ -4,7 +4,7 @@ import random
 
 
 class GameOfLife:
-	def __init__(self, screen_width = 1000,
+	def __init__(self, screen_width = 800,
 						screen_height = 600,
 						cell_size = 10,
 						alive_color = "turquoise",
@@ -21,9 +21,9 @@ class GameOfLife:
 		self.inactive_board = []
 
 		self.is_paused = False
+		self.did_quit = False
 		self.speed = speed
 		self.last_update_time = 0
-		self.desired_time_between_updates = (1 / self.speed) * 1000
 
 		self.preset = preset
 		self.screen_width = screen_width
@@ -72,7 +72,6 @@ class GameOfLife:
 		return board
 
 	def set_board(self):
-		print(self.preset)
 		if self.preset == "random":
 			for row in range(self.num_rows):
 				for cols in range(self.num_cols):
@@ -80,13 +79,12 @@ class GameOfLife:
 					self.current_game_board[row][cols] = cell
 		elif self.preset == "option1":
 			self.option1()
-			print("option1")
-		elif self.preset == "option1":
-			print("this will be preset 2")
 		elif self.preset == "option2":
-			print("this will be preset 3")
+			self.option2()
 		elif self.preset == "option3":
-			print("this will be preset 4")
+			self.option3()
+		elif self.preset == "option4":
+			self.option4()
 
 	def clear_screen(self):
 		self.screen.fill(self.dead_color)
@@ -159,14 +157,6 @@ class GameOfLife:
 		else:
 			return 0
 
-	def set_speed(self):
-		now = pygame.time.get_ticks()
-		time_since_last_update = now - self.last_update_time
-		time_to_delay = self.desired_time_between_updates - time_since_last_update
-		if time_to_delay > 0:
-			pygame.time.delay(int(time_to_delay))
-		self.last_update_time = now
-
 	def handle_events(self):
 		for event in pygame.event.get():
 			# User has closed the window manually
@@ -176,70 +166,225 @@ class GameOfLife:
 			elif event.type == pygame.KEYDOWN:
 				# user can press "q" to quit
 				if event.unicode == 'q':
-					# pygame.quit()
-					sys.exit()
+					self.did_quit = True
 				elif event.unicode == 'p':
 					self.is_paused = not self.is_paused
 				elif event.unicode == 'r':
+					self.preset = "random"
 					self.set_board()
 				elif event.unicode == '-':
 					if self.speed < 2:
 						return
 					self.speed -= 1
-					self.desired_time_between_updates = (1 / self.speed) * 1000
 				elif event.unicode == '+':
 					self.speed += 1
-					self.desired_time_between_updates = (1 / self.speed) * 1000
 
 	####################
 	# Premade Patterns
 	####################
 
 	def option1(self):
-		# set board to all dead
-		# for row in range(self.num_rows):
-		# 	for cols in range(self.num_cols):
-		# 		self.current_game_board[row][cols] = 0
-
 		# set alive cells for Gosper glider gun
-			self.current_game_board[2][26] = 1
-			self.current_game_board[3][24] = 1
-			self.current_game_board[3][26] = 1
-			self.current_game_board[4][14] = 1
-			self.current_game_board[4][15] = 1
-			self.current_game_board[4][22] = 1
-			self.current_game_board[4][23] = 1
-			self.current_game_board[4][36] = 1
-			self.current_game_board[4][37] = 1
-			self.current_game_board[5][13] = 1
-			self.current_game_board[5][17] = 1
-			self.current_game_board[5][22] = 1
-			self.current_game_board[5][23] = 1
-			self.current_game_board[5][36] = 1
-			self.current_game_board[5][37] = 1
-			self.current_game_board[6][2] = 1
-			self.current_game_board[6][3] = 1
-			self.current_game_board[6][12] = 1
-			self.current_game_board[6][18] = 1
-			self.current_game_board[6][22] = 1
-			self.current_game_board[6][23] = 1
-			self.current_game_board[7][2] = 1
-			self.current_game_board[7][3] = 1
-			self.current_game_board[7][12] = 1
-			self.current_game_board[7][16] = 1
-			self.current_game_board[7][18] = 1
-			self.current_game_board[7][19] = 1
-			self.current_game_board[7][24] = 1
-			self.current_game_board[7][26] = 1
-			self.current_game_board[8][12] = 1
-			self.current_game_board[8][18] = 1
-			self.current_game_board[8][26] = 1
-			self.current_game_board[9][13] = 1
-			self.current_game_board[9][17] = 1
-			self.current_game_board[10][14] = 1
-			self.current_game_board[10][15] = 1
+		self.current_game_board[2][26] = 1
+		self.current_game_board[3][24] = 1
+		self.current_game_board[3][26] = 1
+		self.current_game_board[4][14] = 1
+		self.current_game_board[4][15] = 1
+		self.current_game_board[4][22] = 1
+		self.current_game_board[4][23] = 1
+		self.current_game_board[4][36] = 1
+		self.current_game_board[4][37] = 1
+		self.current_game_board[5][13] = 1
+		self.current_game_board[5][17] = 1
+		self.current_game_board[5][22] = 1
+		self.current_game_board[5][23] = 1
+		self.current_game_board[5][36] = 1
+		self.current_game_board[5][37] = 1
+		self.current_game_board[6][2] = 1
+		self.current_game_board[6][3] = 1
+		self.current_game_board[6][12] = 1
+		self.current_game_board[6][18] = 1
+		self.current_game_board[6][22] = 1
+		self.current_game_board[6][23] = 1
+		self.current_game_board[7][2] = 1
+		self.current_game_board[7][3] = 1
+		self.current_game_board[7][12] = 1
+		self.current_game_board[7][16] = 1
+		self.current_game_board[7][18] = 1
+		self.current_game_board[7][19] = 1
+		self.current_game_board[7][24] = 1
+		self.current_game_board[7][26] = 1
+		self.current_game_board[8][12] = 1
+		self.current_game_board[8][18] = 1
+		self.current_game_board[8][26] = 1
+		self.current_game_board[9][13] = 1
+		self.current_game_board[9][17] = 1
+		self.current_game_board[10][14] = 1
+		self.current_game_board[10][15] = 1
 
 
+	def option2(self):
+		for col in range(2, 10):
+			self.current_game_board[self.num_rows // 2][col] = 1
+		for col in range(11, 16):
+			self.current_game_board[self.num_rows // 2][col] = 1
+		for col in range(19, 22):
+			self.current_game_board[self.num_rows // 2][col] = 1
+		for col in range(28, 35):
+			self.current_game_board[self.num_rows // 2][col] = 1
+		for col in range(36, 40):
+			self.current_game_board[self.num_rows // 2][col] = 1
+
+
+	def option3(self):
+		# Block
+		self.current_game_board[2][2] = 1
+		self.current_game_board[2][3] = 1
+		self.current_game_board[3][2] = 1
+		self.current_game_board[3][3] = 1
+
+		# Bee-hive
+		self.current_game_board[6][3] = 1
+		self.current_game_board[6][4] = 1
+		self.current_game_board[7][2] = 1
+		self.current_game_board[7][5] = 1
+		self.current_game_board[8][3] = 1
+		self.current_game_board[8][4] = 1
+
+		# Loaf
+		self.current_game_board[11][3] = 1
+		self.current_game_board[11][4] = 1
+		self.current_game_board[12][2] = 1
+		self.current_game_board[12][5] = 1
+		self.current_game_board[13][3] = 1
+		self.current_game_board[13][5] = 1
+		self.current_game_board[14][4] = 1
+
+		# Boat
+		self.current_game_board[17][2] = 1
+		self.current_game_board[17][3] = 1
+		self.current_game_board[18][2] = 1
+		self.current_game_board[18][4] = 1
+		self.current_game_board[19][3] = 1
+
+		# Tub
+		self.current_game_board[22][3] = 1
+		self.current_game_board[23][2] = 1
+		self.current_game_board[23][4] = 1
+		self.current_game_board[24][3] = 1
+
+		# Blinker
+		for col in range(15, 18):
+			self.current_game_board[2][col] = 1
+
+		# Toad
+		for col in range(16, 19):
+			self.current_game_board[6][col] = 1
+		for col in range(15, 18):
+			self.current_game_board[7][col] = 1
+
+		# Beacon
+		self.current_game_board[13][15] = 1
+		self.current_game_board[13][16] = 1
+		self.current_game_board[14][15] = 1
+		self.current_game_board[14][16] = 1
+		self.current_game_board[15][17] = 1
+		self.current_game_board[15][18] = 1
+		self.current_game_board[16][17] = 1
+		self.current_game_board[16][18] = 1
+
+		# Pulsar
+		for col in range(18, 21):
+			self.current_game_board[23][col] = 1
+			self.current_game_board[28][col] = 1
+			self.current_game_board[30][col] = 1
+			self.current_game_board[35][col] = 1
+		for col in range(24, 27):
+			self.current_game_board[23][col] = 1
+			self.current_game_board[28][col] = 1
+			self.current_game_board[30][col] = 1
+			self.current_game_board[35][col] = 1
+		for row in range(25, 28):
+			self.current_game_board[row][16] = 1
+			self.current_game_board[row][21] = 1
+			self.current_game_board[row][23] = 1
+			self.current_game_board[row][28] = 1
+		for row in range(31, 34):
+			self.current_game_board[row][16] = 1
+			self.current_game_board[row][21] = 1
+			self.current_game_board[row][23] = 1
+			self.current_game_board[row][28] = 1
+
+
+	def option4(self):
+		# Light-weight Spaceship
+		self.current_game_board[3][5] = 1
+		self.current_game_board[3][6] = 1
+		self.current_game_board[4][3] = 1
+		self.current_game_board[4][4] = 1
+		self.current_game_board[4][6] = 1
+		self.current_game_board[4][7] = 1
+		for col in range(3, 7):
+			self.current_game_board[5][col] = 1
+		self.current_game_board[6][4] = 1
+		self.current_game_board[6][5] = 1
+
+		# Middle-weight Spaceship
+		for col in range(4, 9):
+			self.current_game_board[11][col] = 1
+		self.current_game_board[12][3] = 1
+		self.current_game_board[12][8] = 1
+		self.current_game_board[13][8] = 1
+		self.current_game_board[14][3] = 1
+		self.current_game_board[14][7] = 1
+		self.current_game_board[15][5] = 1
+
+		# Heavy-weight Spaceship
+		self.current_game_board[20][7] = 1
+		self.current_game_board[20][8] = 1
+		for col in range(3, 7):
+			self.current_game_board[21][col] = 1
+		self.current_game_board[21][8] = 1
+		self.current_game_board[21][9] = 1
+		for col in range(3, 9):
+			self.current_game_board[22][col] = 1
+		for col in range(4, 8):
+			self.current_game_board[23][col] = 1
+
+		# Backwards
+		# Light-weight Spaceship
+		self.current_game_board[28][-5] = 1
+		self.current_game_board[28][-6] = 1
+		self.current_game_board[29][-3] = 1
+		self.current_game_board[29][-4] = 1
+		self.current_game_board[29][-6] = 1
+		self.current_game_board[29][-7] = 1
+		for col in range(-3, -7, -1):
+			self.current_game_board[30][col] = 1
+		self.current_game_board[31][-4] = 1
+		self.current_game_board[31][-5] = 1
+
+		# Middle-weight Spaceship
+		for col in range(-4, -9, -1):
+			self.current_game_board[36][col] = 1
+		self.current_game_board[37][-3] = 1
+		self.current_game_board[37][-8] = 1
+		self.current_game_board[38][-8] = 1
+		self.current_game_board[39][-3] = 1
+		self.current_game_board[39][-7] = 1
+		self.current_game_board[40][-5] = 1
+
+		# Heavy-weight Spaceship
+		self.current_game_board[45][-7] = 1
+		self.current_game_board[45][-8] = 1
+		for col in range(-3, -7, -1):
+			self.current_game_board[46][col] = 1
+		self.current_game_board[46][-8] = 1
+		self.current_game_board[46][-9] = 1
+		for col in range(-3, -9, -1):
+			self.current_game_board[47][col] = 1
+		for col in range(-4, -8, -1):
+			self.current_game_board[48][col] = 1
 
 
 	####################
@@ -251,16 +396,19 @@ class GameOfLife:
 		while True:
 			# needs to handle events
 			self.handle_events()
+			if self.did_quit:
+				pygame.display.quit()
+				# pygame.quit()
+				break
 			# handles pause condition while still listening to events
 			if self.is_paused:
+				clock.tick(self.speed)
 				continue
 			# Switch between current and inactive game boards
 			self.alternate_boards()
 			# Draw the current game board on the screen
 			self.draw_board()
 			clock.tick(self.speed)
-			# Control speed by waiting after each iteration
-			# self.set_speed()
 
 
 if __name__ == '__main__':

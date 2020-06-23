@@ -38,17 +38,19 @@ def start_opt1():
 
 
 def start_opt2():
-	# global preset
+	global preset
 	preset = "option2"
 	start_game()
 
 
 def start_opt3():
+	global preset
 	preset = "option3"
 	start_game()
 
 
 def start_opt4():
+	global preset
 	preset = "option4"
 	start_game()
 
@@ -65,9 +67,9 @@ def start_game():
 frm_start_options = tk.Frame(master = window, pady = 20)
 btn_random = tk.Button(master = frm_start_options, text = "Random", command = start_random, pady = 10)
 btn_opt1 = tk.Button(master = frm_start_options, text = "Gosper Glider Gun", command = start_opt1, pady = 10)
-btn_opt2 = tk.Button(master = frm_start_options, text = "Option 2", command = start_opt2, pady = 10)
-btn_opt3 = tk.Button(master = frm_start_options, text = "Option 3", command = start_opt3, pady = 10)
-btn_opt4 = tk.Button(master = frm_start_options, text = "Option 4", command = start_opt4, pady = 10)
+btn_opt2 = tk.Button(master = frm_start_options, text = "Constructor", command = start_opt2, pady = 10)
+btn_opt3 = tk.Button(master = frm_start_options, text = "Stable Shapes", command = start_opt3, pady = 10)
+btn_opt4 = tk.Button(master = frm_start_options, text = "Spaceships", command = start_opt4, pady = 10)
 
 frm_start_options.pack()
 btn_random.grid(row = 1, column = 1, padx = 20)
@@ -78,7 +80,8 @@ btn_opt4.grid(row = 1, column = 5, padx = 20)
 
 
 frm_alive_color = tk.Frame(master = window, pady = 20, padx = 20)
-rdb_teal = tk.Radiobutton(frm_alive_color, text="Turquoise", variable=alive_color, value="turquoise", fg = "turquoise")
+rdb_turquoise = tk.Radiobutton(frm_alive_color, text= "Turquoise", variable=alive_color,
+								value= "turquoise", fg = "turquoise")
 rdb_red = tk.Radiobutton(frm_alive_color, text="Red", variable=alive_color, value="red", fg = "red")
 rdb_blue = tk.Radiobutton(frm_alive_color, text="Blue", variable=alive_color, value="blue", fg = "blue")
 rdb_green = tk.Radiobutton(frm_alive_color, text="Green", variable=alive_color, value="green", fg = "green")
@@ -86,7 +89,7 @@ rdb_orange = tk.Radiobutton(frm_alive_color, text="Orange", variable=alive_color
 rdb_purple = tk.Radiobutton(frm_alive_color, text="Purple", variable=alive_color, value="purple", fg = "purple")
 
 frm_alive_color.pack(side = tk.LEFT)
-rdb_teal.grid(row = 1, column = 1, sticky = 'w')
+rdb_turquoise.grid(row = 1, column = 1, sticky = 'w')
 rdb_red.grid(row = 2, column = 1, sticky = 'w')
 rdb_blue.grid(row = 3, column = 1, sticky = 'w')
 rdb_green.grid(row = 1, column = 2, sticky = 'w')

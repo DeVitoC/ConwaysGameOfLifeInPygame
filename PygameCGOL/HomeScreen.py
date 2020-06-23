@@ -144,7 +144,7 @@ def exit_window():
 
 
 frm_exit = tk.Frame(master = window)
-exit_button = tk.Button(master = frm_exit, text = "OK", command = exit_window, padx = 10, pady = 10,
+exit_button = tk.Button(master = frm_exit, text = "Exit", command = exit_window, padx = 10, pady = 10,
                         relief = tk.RAISED)
 
 frm_exit.pack(side = tk.LEFT)

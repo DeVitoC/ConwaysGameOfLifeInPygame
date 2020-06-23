@@ -4,6 +4,7 @@ import importlib
 
 gol = importlib.import_module("GameOfLife")
 about = importlib.import_module("AboutCGOL")
+kc = importlib.import_module("KeyCommands")
 
 window = tk.Tk()
 window.title("Conway's Game of Life")
@@ -61,7 +62,6 @@ def start_game():
 							alive_color = alive_color.get(),
 							speed = speed.get(),
 							preset = preset)
-	# game = gol.GameOfLife()
 	game.run()
 
 
@@ -121,13 +121,13 @@ rdb_small_size.grid(row = 3, column = 1, sticky = 'w')
 
 
 def display_about_cgol():
-	print("About CGOL")
 	about_cgol = about.AboutCGOL()
 	about_cgol.run()
 
 
 def display_commands():
-	print("Key Commands")
+	key_commands = kc.KeyCommands()
+	key_commands.run()
 
 
 frm_about = tk.Frame(master = window, pady = 20, padx = 20)
@@ -137,6 +137,21 @@ btn_about_commands = tk.Button(frm_about, text = "Key Commands", command = displ
 frm_about.pack(side = tk.LEFT)
 btn_about_cgol.grid(row = 1, column = 1)
 btn_about_commands.grid(row = 2, column = 1)
+
+
+def exit_window():
+	window.destroy()
+
+
+frm_exit = tk.Frame(master = window)
+exit_button = tk.Button(master = frm_exit, text = "OK", command = exit_window, padx = 10, pady = 10,
+                        relief = tk.RAISED)
+
+frm_exit.pack(side = tk.LEFT)
+exit_button.pack()
+
+
+
 
 
 window.mainloop()

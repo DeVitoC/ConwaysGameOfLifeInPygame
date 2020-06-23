@@ -1,0 +1,10 @@
+Key Commands in Conway's Game of Life:
+    1.  'p' - Toggles between play and pause
+    2.  '1' - Starts over with preset one (Random)
+    3.  '2' - Starts over with preset two (Gosper's Glider Gun)
+    4.  '3' - Starts over with preset three (Constructor)
+    5.  '4' - Starts over with preset four (Stable Shapes)
+    6.  '5' - Starts over with preset five (Spaceships)
+    7.  '-' - Decreases the speed of the game
+    8.  '+' - Increases the speed of the game
+    9.  'q' - Quits to the main screen

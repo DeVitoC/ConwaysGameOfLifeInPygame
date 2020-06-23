@@ -1,7 +1,7 @@
 # ConwaysGameOfLifeInPygame
 
 Conways's game of life is a zero player game, used widely across many technical fields to simulate the
-emergence of patterns. The earliest form of the Game of Life was developed by John Neumann in 1940.
+\nemergence of patterns. The earliest form of the Game of Life was developed by John Neumann in 1940.
 At that time, this was just a theoretical concept, although he and others attempted to create this
 Game of life using the technology of their time with little success. Then after the development of
 computers, John Conway began developing this idea for computers. Starting work on it in 1968, he

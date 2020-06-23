@@ -3,6 +3,7 @@ import tkinter.font as tkfont
 import importlib
 
 gol = importlib.import_module("GameOfLife")
+about = importlib.import_module("AboutCGOL")
 
 window = tk.Tk()
 window.title("Conway's Game of Life")
@@ -121,6 +122,8 @@ rdb_small_size.grid(row = 3, column = 1, sticky = 'w')
 
 def display_about_cgol():
 	print("About CGOL")
+	about_cgol = about.AboutCGOL()
+	about_cgol.run()
 
 
 def display_commands():

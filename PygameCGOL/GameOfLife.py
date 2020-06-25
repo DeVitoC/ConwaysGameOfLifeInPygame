@@ -72,19 +72,19 @@ class GameOfLife:
 										row * self.cell_size + (self.cell_size // 2)),
 										self.cell_size // 2,
 										0)
-		self.setup_button("Random", 25, 625, action = self.set_random)
-		self.setup_button("Gosper Gun", 130, 625, action = self.set_option1)
-		self.setup_button("Constructor", 235, 625, action = self.set_option2)
-		self.setup_button("Stable Shapes", 340, 625, action = self.set_option3)
-		self.setup_button("Spaceships", 445, 625, action = self.set_option4)
+		self.setup_button("Random", 25, 625, inactive_color = self.alive_color, action = self.set_random)
+		self.setup_button("Gosper Gun", 130, inactive_color = self.alive_color, 625, action = self.set_option1)
+		self.setup_button("Constructor", 235, inactive_color = self.alive_color, 625, action = self.set_option2)
+		self.setup_button("Stable Shapes", 340, inactive_color = self.alive_color, 625, action = self.set_option3)
+		self.setup_button("Spaceships", 445, 625, inactive_color = self.alive_color, action = self.set_option4)
 		# if self.is_paused:
 		# 	self.setup_button("Play", 550, 625, width = 50, action = self.toggle_pause)
 		# 	self.setup_button("Next", 605, 625, width = 50, action = self.iterate_once)
 		if not self.is_paused:
-			self.setup_button("Pause", 550, 625, width = 50, action = self.toggle_pause)
-		self.setup_button("Quit", 725, 625, width = 50, action = self.quit)
-		self.setup_button("Faster", 660, 625, width = 50, height = 25, action = self.faster)
-		self.setup_button("Slower", 660, 650, width = 50, height = 25, action = self.slower)
+			self.setup_button("Pause", 550, 625, width = 50, inactive_color = self.alive_color, action = self.toggle_pause)
+		self.setup_button("Quit", 725, 625, width = 50, inactive_color = self.alive_color, action = self.quit)
+		self.setup_button("Faster", 660, 625, width = 50, height = 25, inactive_color = self.alive_color, action = self.faster)
+		self.setup_button("Slower", 660, 650, width = 50, height = 25, inactive_color = self.alive_color, action = self.slower)
 		pygame.display.flip()
 
 
@@ -543,8 +543,8 @@ class GameOfLife:
 				break
 			# handles pause condition while still listening to events
 			if self.is_paused:
-				self.setup_button("Play", 550, 625, width = 50, action = self.play)
-				self.setup_button("Next", 605, 625, width = 50, action = self.iterate_once)
+				self.setup_button("Play", 550, 625, width = 50, inactive_color = self.alive_color, action = self.play)
+				self.setup_button("Next", 605, 625, width = 50, inactive_color = self.alive_color, action = self.iterate_once)
 				self.toggle_cell()
 				pygame.display.flip()
 				self.clock.tick(4)

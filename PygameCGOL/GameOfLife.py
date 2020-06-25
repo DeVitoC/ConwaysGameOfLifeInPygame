@@ -18,7 +18,7 @@ from pygame.locals import (
 
 class GameOfLife:
 	def __init__(self, screen_width = 800,
-						screen_height = 600,
+						screen_height = 700,
 						cell_size = 10,
 						alive_color = "turquoise",
 						dead_color = "black",
@@ -29,7 +29,7 @@ class GameOfLife:
 		self.dead_color = dead_color
 
 		self.num_cols = screen_width // cell_size
-		self.num_rows = screen_height // cell_size
+		self.num_rows = (screen_height - 100) // cell_size
 		self.current_game_board = []
 		self.inactive_board = []
 
@@ -37,6 +37,7 @@ class GameOfLife:
 		self.did_quit = False
 		self.speed = speed
 		self.last_update_time = 0
+		self.clock = pygame.time.Clock()
 
 		self.preset = preset
 		self.screen_width = screen_width
@@ -71,11 +72,47 @@ class GameOfLife:
 										row * self.cell_size + (self.cell_size // 2)),
 										self.cell_size // 2,
 										0)
+		self.setup_button("Random", 25, 625, inactive_color = self.alive_color, action = self.set_random)
+		self.setup_button("Gosper Gun", 130, inactive_color = self.alive_color, 625, action = self.set_option1)
+		self.setup_button("Constructor", 235, inactive_color = self.alive_color, 625, action = self.set_option2)
+		self.setup_button("Stable Shapes", 340, inactive_color = self.alive_color, 625, action = self.set_option3)
+		self.setup_button("Spaceships", 445, 625, inactive_color = self.alive_color, action = self.set_option4)
+		# if self.is_paused:
+		# 	self.setup_button("Play", 550, 625, width = 50, action = self.toggle_pause)
+		# 	self.setup_button("Next", 605, 625, width = 50, action = self.iterate_once)
+		if not self.is_paused:
+			self.setup_button("Pause", 550, 625, width = 50, inactive_color = self.alive_color, action = self.toggle_pause)
+		self.setup_button("Quit", 725, 625, width = 50, inactive_color = self.alive_color, action = self.quit)
+		self.setup_button("Faster", 660, 625, width = 50, height = 25, inactive_color = self.alive_color, action = self.faster)
+		self.setup_button("Slower", 660, 650, width = 50, height = 25, inactive_color = self.alive_color, action = self.slower)
 		pygame.display.flip()
+
+
+	def setup_button(self, msg, xcoord, ycoord, width = 100, height = 50, inactive_color = 'turquoise', active_color  = "light green", action = None):
+		# self.hello_button = pygame_gui.elements.UIButton(relative_rect = pygame.Rect((25, 625), (100, 50)), text = "Say Hello", manager = self.manager)
+		mouse = pygame.mouse.get_pos()
+		click = pygame.mouse.get_pressed()
+
+		if xcoord + width > mouse[0] > xcoord and ycoord + height > mouse[1] > ycoord:
+			pygame.draw.rect(self.screen, active_color, (xcoord, ycoord, width, height))
+
+			if click[0] == 1 and action != None:
+				action()
+		else:
+			pygame.draw.rect(self.screen, inactive_color, (xcoord, ycoord, width, height))
+		smallText = pygame.font.SysFont("comicsansms", 12) # "freesansbold.ttf",
+		textSurf, textRect = self.text_objects(msg, smallText)
+		textRect.center = ((xcoord + (width / 2)), (ycoord + (height / 2)))
+		self.screen.blit(textSurf, textRect)
 
 	######################
 	# Helper Methods
 	######################
+
+	def text_objects(self, text, font):
+		textSurface = font.render(text, True, 'black')
+		return textSurface, textSurface.get_rect()
+
 
 	def create_2d_board(self):
 		board = []
@@ -175,48 +212,36 @@ class GameOfLife:
 			# User has closed the window manually
 			if event.type == QUIT:
 				sys.exit()
-			# User pressed a button
-			# elif event.type == KEYDOWN:
+
 		pressed_keys = pygame.key.get_pressed()
-				# user can press "q" to quit
+		# user can press "q" to quit
 		if pressed_keys[K_q]:
-			self.did_quit = True
+			self.quit()
 		# user can press "p" to toggle between play and pause
 		elif pressed_keys[K_p]:
-			self.is_paused = not self.is_paused
+			self.toggle_pause()
 		# user chooses preset 1 with "1"
 		elif pressed_keys[K_1]:
-			self.preset = "random"
-			self.reset_screen()
-			self.set_board()
+			self.set_random()
 		# user chooses preset 2 with "2"
 		elif pressed_keys[K_2]:
-			self.preset = "option1"
-			self.reset_screen()
-			self.set_board()
+			self.set_option1()
 		# user chooses preset 3 with "3"
 		elif pressed_keys[K_3]:
-			self.preset = "option2"
-			self.reset_screen()
-			self.set_board()
+			self.set_option2()
 		# user chooses preset 4 with "4"
 		elif pressed_keys[K_4]:
-			self.preset = "option3"
-			self.reset_screen()
-			self.set_board()
+			self.set_option3()
 		# user chooses preset 5 with "5"
 		elif pressed_keys[K_5]:
-			self.preset = "option4"
-			self.reset_screen()
-			self.set_board()
+			self.set_option4()
 		# User can press "-" to slow the game
 		elif pressed_keys[K_MINUS]:
-			if self.speed < 2:
-				return
-			self.speed -= 1
+			self.slower()
 		# uset can press "+" to speed up the game
 		elif pressed_keys[K_EQUALS]:
-			self.speed += 1
+			self.faster()
+
 
 	def reset_screen(self):
 		self.current_game_board = []
@@ -225,6 +250,48 @@ class GameOfLife:
 		self. inactive_board = self.create_2d_board()
 
 
+	def set_random(self):
+		self.preset = "random"
+		self.reset_screen()
+		self.set_board()
+
+	def set_option1(self):
+		self.preset = "option1"
+		self.reset_screen()
+		self.set_board()
+
+	def set_option2(self):
+		self.preset = "option2"
+		self.reset_screen()
+		self.set_board()
+
+	def set_option3(self):
+		self.preset = "option3"
+		self.reset_screen()
+		self.set_board()
+
+	def set_option4(self):
+		self.preset = "option4"
+		self.reset_screen()
+		self.set_board()
+
+	def toggle_pause(self):
+		self.is_paused = True
+		self.clock.tick(1)
+
+	def play(self):
+		self.is_paused = False
+
+	def quit(self):
+		self.did_quit = True
+
+	def faster(self):
+		self.speed += 1
+
+	def slower(self):
+		if self.speed < 2:
+			return
+		self.speed -= 1
 
 	####################
 	# Premade Patterns
@@ -399,47 +466,75 @@ class GameOfLife:
 			self.current_game_board[23][col] = 1
 
 		# Backwards
-		# Light-weight Spaceship
-		self.current_game_board[28][-5] = 1
-		self.current_game_board[28][-6] = 1
-		self.current_game_board[29][-3] = 1
-		self.current_game_board[29][-4] = 1
-		self.current_game_board[29][-6] = 1
-		self.current_game_board[29][-7] = 1
-		for col in range(-3, -7, -1):
-			self.current_game_board[30][col] = 1
-		self.current_game_board[31][-4] = 1
-		self.current_game_board[31][-5] = 1
+		if self.cell_size <= 10:
+			# Light-weight Spaceship
+			self.current_game_board[28][-5] = 1
+			self.current_game_board[28][-6] = 1
+			self.current_game_board[29][-3] = 1
+			self.current_game_board[29][-4] = 1
+			self.current_game_board[29][-6] = 1
+			self.current_game_board[29][-7] = 1
+			for col in range(-3, -7, -1):
+				self.current_game_board[30][col] = 1
+			self.current_game_board[31][-4] = 1
+			self.current_game_board[31][-5] = 1
 
-		# Middle-weight Spaceship
-		for col in range(-4, -9, -1):
-			self.current_game_board[36][col] = 1
-		self.current_game_board[37][-3] = 1
-		self.current_game_board[37][-8] = 1
-		self.current_game_board[38][-8] = 1
-		self.current_game_board[39][-3] = 1
-		self.current_game_board[39][-7] = 1
-		self.current_game_board[40][-5] = 1
+			# Middle-weight Spaceship
+			for col in range(-4, -9, -1):
+				self.current_game_board[36][col] = 1
+			self.current_game_board[37][-3] = 1
+			self.current_game_board[37][-8] = 1
+			self.current_game_board[38][-8] = 1
+			self.current_game_board[39][-3] = 1
+			self.current_game_board[39][-7] = 1
+			self.current_game_board[40][-5] = 1
 
-		# Heavy-weight Spaceship
-		self.current_game_board[45][-7] = 1
-		self.current_game_board[45][-8] = 1
-		for col in range(-3, -7, -1):
-			self.current_game_board[46][col] = 1
-		self.current_game_board[46][-8] = 1
-		self.current_game_board[46][-9] = 1
-		for col in range(-3, -9, -1):
-			self.current_game_board[47][col] = 1
-		for col in range(-4, -8, -1):
-			self.current_game_board[48][col] = 1
+			# Heavy-weight Spaceship
+			self.current_game_board[45][-7] = 1
+			self.current_game_board[45][-8] = 1
+			for col in range(-3, -7, -1):
+				self.current_game_board[46][col] = 1
+			self.current_game_board[46][-8] = 1
+			self.current_game_board[46][-9] = 1
+			for col in range(-3, -9, -1):
+				self.current_game_board[47][col] = 1
+			for col in range(-4, -8, -1):
+				self.current_game_board[48][col] = 1
 
+
+	def iterate_once(self):
+		self.alternate_boards()
+		self.draw_board()
+
+
+	def toggle_cell(self):
+		mouse = pygame.mouse.get_pos()
+		click = pygame.mouse.get_pressed()
+		if click[0] == 1 and 0 < mouse[0] < 800 and 0 < mouse[1] < 600:
+			col = (mouse[0] - (mouse[0] % self.cell_size)) // self.cell_size
+			row = (mouse[1] - (mouse[1] % self.cell_size)) // self.cell_size
+			print(f"Row: {row}, Column: {col}, Value: {self.current_game_board[row][col]}")
+			self.current_game_board[row][col] = ((self.current_game_board[row][col] + 1) % 2)
+			print(f"Value: {self.current_game_board[row][col]}")
+
+			if self.current_game_board[row][col] == 1:
+				color = self.alive_color
+			else:
+				color = self.dead_color
+			print(f"{color}")
+			pygame.draw.circle(self.screen,
+			                   color,
+			                   (col * self.cell_size + (self.cell_size // 2),
+			                    row * self.cell_size + (self.cell_size // 2)),
+			                   self.cell_size // 2,
+			                   0)
+			pygame.display.flip()
 
 	####################
 	# Run loop
 	####################
 
 	def run(self):
-		clock = pygame.time.Clock()
 		while True:
 			# needs to handle events
 			self.handle_events()
@@ -448,13 +543,17 @@ class GameOfLife:
 				break
 			# handles pause condition while still listening to events
 			if self.is_paused:
-				clock.tick(self.speed)
+				self.setup_button("Play", 550, 625, width = 50, inactive_color = self.alive_color, action = self.play)
+				self.setup_button("Next", 605, 625, width = 50, inactive_color = self.alive_color, action = self.iterate_once)
+				self.toggle_cell()
+				pygame.display.flip()
+				self.clock.tick(4)
 				continue
 			# Switch between current and inactive game boards
 			self.alternate_boards()
 			# Draw the current game board on the screen
 			self.draw_board()
-			clock.tick(self.speed)
+			self.clock.tick(self.speed)
 
 
 if __name__ == '__main__':

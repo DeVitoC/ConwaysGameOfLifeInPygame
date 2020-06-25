@@ -1,7 +1,6 @@
 import pygame
 import sys
 import random
-import pygame_gui
 
 from pygame.locals import (
 	K_1,
@@ -22,7 +21,7 @@ class GameOfLife:
 						screen_height = 700,
 						cell_size = 10,
 						alive_color = "turquoise",
-						dead_color = "white",
+						dead_color = "black",
 						speed = 4,
 						preset = "random"):
 		self.cell_size = cell_size
@@ -38,6 +37,7 @@ class GameOfLife:
 		self.did_quit = False
 		self.speed = speed
 		self.last_update_time = 0
+		self.clock = pygame.time.Clock()
 
 		self.preset = preset
 		self.screen_width = screen_width
@@ -48,7 +48,6 @@ class GameOfLife:
 		pygame.init()
 		self.screen = pygame.display.set_mode((screen_width, screen_height))
 		self.clear_screen()
-		# self.manager = pygame_gui.UIManager((800, 700), 'button_theme.json')
 		pygame.display.flip()
 
 	#######################
@@ -78,6 +77,9 @@ class GameOfLife:
 		self.setup_button("Constructor", 235, 625, action = self.set_option2)
 		self.setup_button("Stable Shapes", 340, 625, action = self.set_option3)
 		self.setup_button("Spaceships", 445, 625, action = self.set_option4)
+		# if self.is_paused:
+		# 	self.setup_button("Play", 550, 625, width = 50, action = self.toggle_pause)
+		# 	self.setup_button("Next", 605, 625, width = 50, action = self.iterate_once)
 		if not self.is_paused:
 			self.setup_button("Pause", 550, 625, width = 50, action = self.toggle_pause)
 		self.setup_button("Quit", 725, 625, width = 50, action = self.quit)
@@ -98,7 +100,7 @@ class GameOfLife:
 				action()
 		else:
 			pygame.draw.rect(self.screen, inactive_color, (xcoord, ycoord, width, height))
-		smallText = pygame.font.Font("freesansbold.ttf", 12)
+		smallText = pygame.font.SysFont("comicsansms", 12) # "freesansbold.ttf",
 		textSurf, textRect = self.text_objects(msg, smallText)
 		textRect.center = ((xcoord + (width / 2)), (ycoord + (height / 2)))
 		self.screen.blit(textSurf, textRect)
@@ -211,16 +213,8 @@ class GameOfLife:
 			if event.type == QUIT:
 				sys.exit()
 
-			# if event.type == pygame.USEREVENT:
-			# 	if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
-			# 		if event.ui_element == self.hello_button:
-			# 			print("Hello World")
-			# self.manager.process_events(event)
-
-			# User pressed a button
-			# elif event.type == KEYDOWN:
 		pressed_keys = pygame.key.get_pressed()
-				# user can press "q" to quit
+		# user can press "q" to quit
 		if pressed_keys[K_q]:
 			self.quit()
 		# user can press "p" to toggle between play and pause
@@ -282,7 +276,11 @@ class GameOfLife:
 		self.set_board()
 
 	def toggle_pause(self):
-		self.is_paused = not self.is_paused
+		self.is_paused = True
+		self.clock.tick(1)
+
+	def play(self):
+		self.is_paused = False
 
 	def quit(self):
 		self.did_quit = True
@@ -468,47 +466,75 @@ class GameOfLife:
 			self.current_game_board[23][col] = 1
 
 		# Backwards
-		# Light-weight Spaceship
-		self.current_game_board[28][-5] = 1
-		self.current_game_board[28][-6] = 1
-		self.current_game_board[29][-3] = 1
-		self.current_game_board[29][-4] = 1
-		self.current_game_board[29][-6] = 1
-		self.current_game_board[29][-7] = 1
-		for col in range(-3, -7, -1):
-			self.current_game_board[30][col] = 1
-		self.current_game_board[31][-4] = 1
-		self.current_game_board[31][-5] = 1
+		if self.cell_size <= 10:
+			# Light-weight Spaceship
+			self.current_game_board[28][-5] = 1
+			self.current_game_board[28][-6] = 1
+			self.current_game_board[29][-3] = 1
+			self.current_game_board[29][-4] = 1
+			self.current_game_board[29][-6] = 1
+			self.current_game_board[29][-7] = 1
+			for col in range(-3, -7, -1):
+				self.current_game_board[30][col] = 1
+			self.current_game_board[31][-4] = 1
+			self.current_game_board[31][-5] = 1
 
-		# Middle-weight Spaceship
-		for col in range(-4, -9, -1):
-			self.current_game_board[36][col] = 1
-		self.current_game_board[37][-3] = 1
-		self.current_game_board[37][-8] = 1
-		self.current_game_board[38][-8] = 1
-		self.current_game_board[39][-3] = 1
-		self.current_game_board[39][-7] = 1
-		self.current_game_board[40][-5] = 1
+			# Middle-weight Spaceship
+			for col in range(-4, -9, -1):
+				self.current_game_board[36][col] = 1
+			self.current_game_board[37][-3] = 1
+			self.current_game_board[37][-8] = 1
+			self.current_game_board[38][-8] = 1
+			self.current_game_board[39][-3] = 1
+			self.current_game_board[39][-7] = 1
+			self.current_game_board[40][-5] = 1
 
-		# Heavy-weight Spaceship
-		self.current_game_board[45][-7] = 1
-		self.current_game_board[45][-8] = 1
-		for col in range(-3, -7, -1):
-			self.current_game_board[46][col] = 1
-		self.current_game_board[46][-8] = 1
-		self.current_game_board[46][-9] = 1
-		for col in range(-3, -9, -1):
-			self.current_game_board[47][col] = 1
-		for col in range(-4, -8, -1):
-			self.current_game_board[48][col] = 1
+			# Heavy-weight Spaceship
+			self.current_game_board[45][-7] = 1
+			self.current_game_board[45][-8] = 1
+			for col in range(-3, -7, -1):
+				self.current_game_board[46][col] = 1
+			self.current_game_board[46][-8] = 1
+			self.current_game_board[46][-9] = 1
+			for col in range(-3, -9, -1):
+				self.current_game_board[47][col] = 1
+			for col in range(-4, -8, -1):
+				self.current_game_board[48][col] = 1
 
+
+	def iterate_once(self):
+		self.alternate_boards()
+		self.draw_board()
+
+
+	def toggle_cell(self):
+		mouse = pygame.mouse.get_pos()
+		click = pygame.mouse.get_pressed()
+		if click[0] == 1 and 0 < mouse[0] < 800 and 0 < mouse[1] < 600:
+			col = (mouse[0] - (mouse[0] % self.cell_size)) // self.cell_size
+			row = (mouse[1] - (mouse[1] % self.cell_size)) // self.cell_size
+			print(f"Row: {row}, Column: {col}, Value: {self.current_game_board[row][col]}")
+			self.current_game_board[row][col] = ((self.current_game_board[row][col] + 1) % 2)
+			print(f"Value: {self.current_game_board[row][col]}")
+
+			if self.current_game_board[row][col] == 1:
+				color = self.alive_color
+			else:
+				color = self.dead_color
+			print(f"{color}")
+			pygame.draw.circle(self.screen,
+			                   color,
+			                   (col * self.cell_size + (self.cell_size // 2),
+			                    row * self.cell_size + (self.cell_size // 2)),
+			                   self.cell_size // 2,
+			                   0)
+			pygame.display.flip()
 
 	####################
 	# Run loop
 	####################
 
 	def run(self):
-		clock = pygame.time.Clock()
 		while True:
 			# needs to handle events
 			self.handle_events()
@@ -517,16 +543,17 @@ class GameOfLife:
 				break
 			# handles pause condition while still listening to events
 			if self.is_paused:
-				clock.tick(self.speed)
-				self.setup_button("Play", 550, 625, width = 50, action = self.toggle_pause)
-				self.setup_button("Next", 605, 625, width = 50)
+				self.setup_button("Play", 550, 625, width = 50, action = self.play)
+				self.setup_button("Next", 605, 625, width = 50, action = self.iterate_once)
+				self.toggle_cell()
 				pygame.display.flip()
+				self.clock.tick(4)
 				continue
 			# Switch between current and inactive game boards
 			self.alternate_boards()
 			# Draw the current game board on the screen
 			self.draw_board()
-			clock.tick(self.speed)
+			self.clock.tick(self.speed)
 
 
 if __name__ == '__main__':

@@ -36,8 +36,9 @@ class GameOfLife:
 		self.is_paused = False
 		self.did_quit = False
 		self.speed = speed
-		self.last_update_time = 0
+		self.generation = 0
 		self.clock = pygame.time.Clock()
+
 
 		self.preset = preset
 		self.screen_width = screen_width
@@ -72,24 +73,24 @@ class GameOfLife:
 										row * self.cell_size + (self.cell_size // 2)),
 										self.cell_size // 2,
 										0)
-		self.setup_button("Random", 25, 625, inactive_color = self.alive_color, action = self.set_random)
-		self.setup_button("Gosper Gun", 130, inactive_color = self.alive_color, 625, action = self.set_option1)
-		self.setup_button("Constructor", 235, inactive_color = self.alive_color, 625, action = self.set_option2)
-		self.setup_button("Stable Shapes", 340, inactive_color = self.alive_color, 625, action = self.set_option3)
-		self.setup_button("Spaceships", 445, 625, inactive_color = self.alive_color, action = self.set_option4)
-		# if self.is_paused:
-		# 	self.setup_button("Play", 550, 625, width = 50, action = self.toggle_pause)
-		# 	self.setup_button("Next", 605, 625, width = 50, action = self.iterate_once)
+
+		self.generation += 1
+		self.setup_button("Random", 25, 625, 85, 50, inactive_color = self.alive_color, action = self.set_random)
+		self.setup_button("Gosper Gun", 115, 625, 85, 50, inactive_color = self.alive_color, action = self.set_option1)
+		self.setup_button("Constructor", 205, 625, 85, 50, inactive_color = self.alive_color, action = self.set_option2)
+		self.setup_button("Stable Shapes", 295, 625, 85, 50, inactive_color = self.alive_color, action = self.set_option3)
+		self.setup_button("Spaceships", 385, 625, 85, 50, inactive_color = self.alive_color, action = self.set_option4)
 		if not self.is_paused:
-			self.setup_button("Pause", 550, 625, width = 50, inactive_color = self.alive_color, action = self.toggle_pause)
+			self.setup_button("Pause", 475, 625, width = 50, inactive_color = self.alive_color, action = self.toggle_pause)
+		self.setup_button("Faster", 585, 625, width = 50, height = 25, inactive_color = self.alive_color, action = self.faster)
+		self.setup_button("Slower", 585, 650, width = 50, height = 25, inactive_color = self.alive_color, action = self.slower)
 		self.setup_button("Quit", 725, 625, width = 50, inactive_color = self.alive_color, action = self.quit)
-		self.setup_button("Faster", 660, 625, width = 50, height = 25, inactive_color = self.alive_color, action = self.faster)
-		self.setup_button("Slower", 660, 650, width = 50, height = 25, inactive_color = self.alive_color, action = self.slower)
+		self.setup_button(str(self.generation), 640, 625, 80, 25, inactive_color = self.alive_color, active_color = self.alive_color)
+		self.setup_button("Generations", 640, 650, 80, 25, inactive_color = self.alive_color, active_color = self.alive_color)
 		pygame.display.flip()
 
 
 	def setup_button(self, msg, xcoord, ycoord, width = 100, height = 50, inactive_color = 'turquoise', active_color  = "light green", action = None):
-		# self.hello_button = pygame_gui.elements.UIButton(relative_rect = pygame.Rect((25, 625), (100, 50)), text = "Say Hello", manager = self.manager)
 		mouse = pygame.mouse.get_pos()
 		click = pygame.mouse.get_pressed()
 
@@ -248,6 +249,7 @@ class GameOfLife:
 		self.inactive_board = []
 		self.current_game_board = self.create_2d_board()
 		self. inactive_board = self.create_2d_board()
+		self.generation = 0
 
 
 	def set_random(self):
@@ -513,15 +515,12 @@ class GameOfLife:
 		if click[0] == 1 and 0 < mouse[0] < 800 and 0 < mouse[1] < 600:
 			col = (mouse[0] - (mouse[0] % self.cell_size)) // self.cell_size
 			row = (mouse[1] - (mouse[1] % self.cell_size)) // self.cell_size
-			print(f"Row: {row}, Column: {col}, Value: {self.current_game_board[row][col]}")
 			self.current_game_board[row][col] = ((self.current_game_board[row][col] + 1) % 2)
-			print(f"Value: {self.current_game_board[row][col]}")
 
 			if self.current_game_board[row][col] == 1:
 				color = self.alive_color
 			else:
 				color = self.dead_color
-			print(f"{color}")
 			pygame.draw.circle(self.screen,
 			                   color,
 			                   (col * self.cell_size + (self.cell_size // 2),
@@ -543,8 +542,8 @@ class GameOfLife:
 				break
 			# handles pause condition while still listening to events
 			if self.is_paused:
-				self.setup_button("Play", 550, 625, width = 50, inactive_color = self.alive_color, action = self.play)
-				self.setup_button("Next", 605, 625, width = 50, inactive_color = self.alive_color, action = self.iterate_once)
+				self.setup_button("Play", 475, 625, width = 50, inactive_color = self.alive_color, action = self.play)
+				self.setup_button("Next", 530, 625, width = 50, inactive_color = self.alive_color, action = self.iterate_once)
 				self.toggle_cell()
 				pygame.display.flip()
 				self.clock.tick(4)
